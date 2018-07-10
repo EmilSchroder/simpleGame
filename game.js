@@ -21,6 +21,24 @@ var leftPressed = false;
 var dx = 2;
 var dy = -2;
 
+//setting out the BRICK variables
+var brickRowCount = 3;
+var brickColumnCount = 5;
+var brickWidth = 75;
+var brickHeight = 20;
+var brickPadding = 10;
+var brickOffsetTop = 30;
+var brickOffsetLeft = 30;
+
+//Giving BRICKS their properties
+var bricks = [];
+    for (var c=0; c<brickColumnCount; c++){
+        bricks[c] = [];
+        for (var r=0; r<brickRowCount; r++){
+            bricks[c][r] = {x:0, y:0}
+        }
+    }
+
 
 function drawBall () {
     //This draws the object that we want to move
@@ -40,6 +58,22 @@ function drawPaddle(){
     ctx.closePath();
 }
 
+function drawBricks(){
+    for (var c=0; c<brickColumnCount;c++){
+        for (var r=0; r<brickRowCount;r++){
+            var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+            var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+}
+
 function moveBall (){
     x += dx;
     y += dy;
@@ -47,8 +81,8 @@ function moveBall (){
 
 function collision(){
     //if it hits the bottom or paddle
-    if (y+dy+ballRad > canvas.height){    
-        if(x > paddleX && x < paddleX + paddleWidth){
+    if (y+dy+(ballRad/2) > canvas.height){    
+        if(x > paddleX - ballRad/2 && x < paddleX + paddleWidth + ballRad/2){
             dy = -dy;
         } else {
         alert("Game Over");
@@ -82,9 +116,11 @@ function draw() {
     //defines the ball, paddle and interactions
     drawBall();
     drawPaddle();
-    collision();
-    movePaddle();
+    drawBricks();
+    collision(); 
     moveBall();
+    movePaddle();
+   
 }
 
 
