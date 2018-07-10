@@ -43,8 +43,16 @@ var bricks = [];
 
 
 
-document.addEventListener("keydown",keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
+document.addEventListener("keydown",keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("mousemove", mouseMoveHandler, false);
+
+function mouseMoveHandler(evt){
+    var relativeX = evt.clientX - canvas.offsetLeft;
+    if (relativeX > 0 && relativeX < canvas.width){
+        paddleX = relativeX - paddleWidth;
+    }
+}
 
 function keyDownHandler(evt){
     if(evt.keyCode == 68){
@@ -70,6 +78,10 @@ function bricksCollisionDectec(){
                 dy = -dy;
                 b.status = 0;
                 score++;
+                if (score == brickColumnCount*brickRowCount){
+                    alert("YOU WIN, YOU ARE A WINNER");
+                    document.location.reload();
+                }
             }
         }
     }
