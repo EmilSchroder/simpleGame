@@ -75,9 +75,6 @@ function draw() {
     collision();
     movePaddle();
     moveBall();
-
-
-
 }
 
 
