@@ -30,15 +30,56 @@ var brickPadding = 10;
 var brickOffsetTop = 30;
 var brickOffsetLeft = 30;
 
+var score = 0;
+
 //Giving BRICKS their properties
 var bricks = [];
     for (var c=0; c<brickColumnCount; c++){
         bricks[c] = [];
         for (var r=0; r<brickRowCount; r++){
-            bricks[c][r] = {x:0, y:0}
+            bricks[c][r] = {x:0, y:0, status:1}
         }
     }
 
+
+
+document.addEventListener("keydown",keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+
+function keyDownHandler(evt){
+    if(evt.keyCode == 68){
+        rightPressed = true;
+    } else if (evt.keyCode == 65){
+        leftPressed = true;
+    }
+}
+
+function keyUpHandler(evt){
+    if (evt.keyCode == 68){
+        rightPressed = false;
+    } else if (evt.keyCode == 65){
+        leftPressed = false;
+    }
+}
+
+function bricksCollisionDectec(){
+    for (var c=0; c<brickColumnCount; c++){
+        for (var r=0; r<brickRowCount; r++){
+            var b = bricks[c][r];
+            if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y+brickHeight && b.status!==0){
+                dy = -dy;
+                b.status = 0;
+                score++;
+            }
+        }
+    }
+}
+
+function drawScore (){
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score: " + score,8,20);
+}
 
 function drawBall () {
     //This draws the object that we want to move
@@ -61,6 +102,7 @@ function drawPaddle(){
 function drawBricks(){
     for (var c=0; c<brickColumnCount;c++){
         for (var r=0; r<brickRowCount;r++){
+            if(bricks[c][r].status == 1){
             var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
             var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
             bricks[c][r].x = brickX;
@@ -71,8 +113,11 @@ function drawBricks(){
             ctx.fill();
             ctx.closePath();
         }
+        }
     }
 }
+
+
 
 function moveBall (){
     x += dx;
@@ -99,6 +144,9 @@ if (x+dx-ballRad < 0 || x+dx+ballRad > canvas.width){
 }
 }
 
+
+
+
 function movePaddle (){
         if (rightPressed && paddleX < canvas.width-paddleWidth){
         paddleX += 7;
@@ -109,18 +157,20 @@ function movePaddle (){
 }
 
 
+
 //Epicentre
 function draw() {
     //Clears the canvas
     ctx.clearRect(0,0,canvas.width,canvas.height);
     //defines the ball, paddle and interactions
     drawBall();
-    drawPaddle();
+    drawPaddle();  
+    drawScore();
+    bricksCollisionDectec();
     drawBricks();
     collision(); 
     moveBall();
     movePaddle();
-   
 }
 
 
@@ -129,23 +179,6 @@ function draw() {
 
 
 //executes "draw()" every 10ms
-document.addEventListener("keydown",keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
 
-function keyDownHandler(evt){
-    if(evt.keyCode == 68){
-        rightPressed = true;
-    } else if (evt.keyCode == 65){
-        leftPressed = true;
-    }
-}
-
-function keyUpHandler(evt){
-    if (evt.keyCode == 68){
-        rightPressed = false;
-    } else if (evt.keyCode == 65){
-        leftPressed = false;
-    }
-}
 
 setInterval(draw,10);
