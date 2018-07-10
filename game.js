@@ -46,10 +46,20 @@ function moveBall (){
 }
 
 function collision(){
-        if (y+dy+ballRad > canvas.height || y+dy-ballRad < 0){
-    dy = -dy;
-}
+    //if it hits the bottom or paddle
+    if (y+dy+ballRad > canvas.height){    
+        if(x > paddleX && x < paddleX + paddleWidth){
+            dy = -dy;
+        } else {
+        alert("Game Over");
+        document.location.reload();
+    }
+    //if it hits the top
+}   else if (y+dy-ballRad < 0){
 
+        dy = -dy;
+}
+// if it hits either of the sides
 if (x+dx-ballRad < 0 || x+dx+ballRad > canvas.width){
     dx = -dx;
 }
